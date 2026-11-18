@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Fire Strike</title>
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#000;font-family:Arial,Helvetica,sans-serif;color:#fff;user-select:none}
+#bg{position:fixed;inset:0;background:
+ radial-gradient(ellipse at 70% 20%,rgba(255,140,0,.55),transparent 55%),
+ radial-gradient(ellipse at 20% 90%,rgba(0,120,60,.6),transparent 60%),
+ linear-gradient(160deg,#0b1a12 0%,#1b3a22 45%,#3a1d0a 100%)}
+#bg:after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,rgba(0,0,0,.18) 0 40px,transparent 40px 90px)}
+#logo{position:fixed;top:12%;width:100%;text-align:center;font-size:7vmin;font-weight:900;letter-spacing:.4vmin;font-style:italic;color:#ffb300;text-shadow:0 0 2vmin #ff6d00,0 .6vmin 0 #7a2e00}
+#logo small{display:block;font-size:3vmin;color:#fff;letter-spacing:1.2vmin;text-shadow:none;font-style:normal}
+#wrap{position:fixed;left:10%;right:10%;bottom:12%}
+#tip{font-size:2.8vmin;text-align:center;margin-bottom:1.6vmin;color:#ffe0b2;text-shadow:0 0 6px #000}
+#bar{height:3vmin;background:rgba(0,0,0,.6);border:.4vmin solid #ffb300;border-radius:2vmin;overflow:hidden}
+#fill{height:100%;width:0;background:linear-gradient(90deg,#ff6d00,#ffd54f);box-shadow:0 0 2vmin #ff9100}
+#pct{text-align:right;font-size:2.6vmin;margin-top:1vmin;font-weight:bold}
+#ver{position:fixed;right:2vmin;top:1.5vmin;font-size:2.2vmin;opacity:.6}
+#err{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);align-items:center;justify-content:center}
+#box{width:min(80%,60vmin);background:#fafafa;color:#222;border-radius:2vmin;padding:3vmin;box-shadow:0 2vmin 6vmin #000}
+#box h3{margin:0 0 1.5vmin;font-size:3.6vmin}#box p{margin:0 0 3vmin;font-size:3vmin;color:#444}
+#ok{float:right;background:#d32f2f;color:#fff;border:0;border-radius:1vmin;padding:1.5vmin 5vmin;font-size:3.2vmin;font-weight:bold}
+#rot{display:none;position:fixed;inset:0;background:#000;z-index:9;align-items:center;justify-content:center;font-size:5vmin;text-align:center}
+@media (orientation:portrait){#rot.on{display:flex}}
+</style></head><body>
+<div id="bg"></div><div id="ver">v1.104.2</div>
+<div id="logo">FIRE STRIKE<small>BATTLE ROYALE</small></div>
+<div id="wrap"><div id="tip">Loading resources...</div><div id="bar"><div id="fill"></div></div><div id="pct">0%</div></div>
+<div id="err"><div id="box"><h3 id="et">Error</h3><p id="em"></p><button id="ok">OK</button></div></div>
+<div id="rot" class="on">📱↻<br>Rotate your phone</div>
+<script>
+var tips=["Connecting to server...","Loading resources...","Downloading map data...","Syncing player data...","Preparing the battlefield..."];
+var errs=[["Connection Lost","Unable to reach game server. (Error code: 0x80042F)"],
+["Fatal Error","Game files are corrupted. Please reinstall the game."],
+["Server Error","Your account was logged out from another device. (Code 403)"],
+["Update Required","A new version is required. Download failed: not enough storage."],
+["Unexpected Error","Fire Strike has stopped working. Error 5012: Memory overflow."],
+["Security Alert","Unusual activity detected on your device. Session terminated."]];
+var start=Date.now(),D=15000,fill=document.getElementById('fill'),pct=document.getElementById('pct'),tip=document.getElementById('tip'),done=false;
+function tick(){var t=Math.min((Date.now()-start)/D,1);
+ var p=Math.min(100,Math.floor((t+Math.sin(t*12)*0.015*(1-t))*100));if(t>=1)p=100;
+ fill.style.width=p+'%';pct.textContent=p+'%';tip.textContent=tips[Math.min(4,Math.floor(t*5))];
+ if(t<1)requestAnimationFrame(tick);else showErr();}
+function showErr(){var e=errs[Math.floor(Math.random()*errs.length)];
+ document.getElementById('et').textContent=e[0];document.getElementById('em').textContent=e[1];
+ document.getElementById('err').style.display='flex';}
+document.getElementById('ok').onclick=function(){
+ if(window.Android&&Android.quit){Android.quit();}
+ else{document.body.innerHTML='';document.body.style.background='#000';try{window.close()}catch(x){}}};
+function chk(){document.getElementById('rot').className=(window.Android||innerWidth>innerHeight)?'':'on';
+ if(innerWidth>innerHeight||window.Android)document.getElementById('rot').className='';}
+addEventListener('resize',chk);chk();
+try{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(function(){})}catch(x){}
+requestAnimationFrame(tick);
+</script></body></html>
